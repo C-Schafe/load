@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>load more</title>
+  <style type="text/css">
+  	ul {
+	  /*border: 1px blue solid;*/
+	  padding: 0 0;
+	}
+	.more {
+	  text-decoration: none;
+	  color: #e27272;
+	  border: 1px #e27272 solid;
+	  display: block;
+	  margin: 0 auto;
+	  width: 100px;
+	  height: 40px;
+	  line-height: 40px; 
+	  text-align: center;
+	  border-radius: 3px
+	}
+	div {
+	  /*border: 1px red solid;*/
+	}
+	li {
+	  display: block;
+	  list-style: none;
+	  height: 40px;
+	  line-height: 40px;
+	  border: 1px #ccc solid;
+	  padding: 0 10px;
+	  border-top: none;
+	}
+	li:first-child {
+		border-top: 1px #ccc solid;
+	}
+	li:hover {
+	  background-color: #008000;
+	  color: #fff;
+	  cursor: pointer;
+	}
+  </style>
+</head>
+<body>
+  <div>
+    <ul id='list'>
+    </ul>
+    <a class="more" href="#">查看更多</a>
+  </div>
+
+  <script type="text/javascript">
+  	var btn = document.querySelector('.more');
+  	var index = 0;
+  	var lock = true;
+  	btn.onclick = function(e){
+  		e.preventDefault()
+  		if(lock){
+  			lock = false
+  			var container = document.querySelector('ul');
+  			var xhr = new XMLHttpRequest();
+  			xhr.open('get','/index.html/loadMore?index='+ index + '&length=5')
+	  		xhr.onreadystatechange = function(){
+	  			if(xhr.readyState === 4 && xhr.status === 200){
+	  				var result = JSON.parse(xhr.responseText)
+	  				console.log(result)
+	  				var fragment = document.createDocumentFragment()
+	  				for(i = 0; i < result.length; i++){
+	  					var item = document.createElement('li');
+	  					item.innerText = result[i];
+	  					fragment.appendChild(item)
+	  				}
+	  				container.appendChild(fragment)
+	  				index = index + 5;
+	  				lock = true
+	  			}
+	  		}
+  			xhr.send()
+  		}
+  		
+  	}
+  </script>
+</body>
+</html>
